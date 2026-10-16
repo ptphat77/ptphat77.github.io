@@ -1727,3 +1727,47 @@ body.screen-quake {
     grid-template-columns: 1fr;
   }
 }
+
+/* Real GitHub Badges & External Link Enhancements */
+.sidebar-heading-link {
+  text-decoration: none;
+  display: inline-block;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.sidebar-heading-link:hover .sidebar-heading {
+  color: var(--monarch-blue);
+  text-shadow: 0 0 8px var(--monarch-blue-glow);
+}
+
+.ext-link-icon {
+  font-size: 11px;
+  color: var(--monarch-blue);
+  opacity: 0.8;
+  margin-left: 2px;
+}
+
+.gh-badge-img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.45));
+  transition: transform 0.25s ease;
+}
+
+.badge-item:hover .gh-badge-img {
+  transform: scale(1.18);
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.8));
+}
+
+.section-subtitle-link {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.section-subtitle-link:hover .section-subtitle {
+  color: var(--monarch-blue);
+  text-shadow: 0 0 8px var(--monarch-blue-glow);
+}

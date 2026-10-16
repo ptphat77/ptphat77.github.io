@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
         particles.push(new ShadowParticle(centerX + (Math.random() * 100 - 50), centerY + (Math.random() * 40 - 20), true));
       }
 
-      showToast('[LỆNH QUÂN VƯƠNG]: "ARISE!" - 14 Đội quân bóng tối đã thức tỉnh và sẵn sàng phục vụ!');
+      showToast(`[LỆNH QUÂN VƯƠNG]: "ARISE!" - ${currentArmyCount} Đội quân bóng tối đã thức tỉnh và sẵn sàng phục vụ!`);
     });
   }
 
@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
     notifBell.addEventListener('click', () => {
       initAudio();
       playSystemChime();
-      showToast('[THÔNG BÁO QUÂN ĐOÀN]: 14 bóng triệu hồi đã sẵn sàng. Bạn có 1 nhiệm vụ hàng ngày cần hoàn thành!');
+      showToast(`[THÔNG BÁO QUÂN ĐOÀN]: ${currentArmyCount} bóng triệu hồi đã sẵn sàng. Bạn có 1 nhiệm vụ hàng ngày cần hoàn thành!`);
     });
   }
 
@@ -470,5 +470,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   
+
+
+  // ================= 10. REAL-TIME DYNAMIC GITHUB STATS FETCHER =================
+  let currentArmyCount = 15; // default fallback
+
+  async function fetchRealGithubStats() {
+    try {
+      // 1. Fetch user profile stats
+      const userRes = await fetch('https://api.github.com/users/ptphat77');
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        
+        if (typeof userData.public_repos === 'number') {
+          currentArmyCount = userData.public_repos;
+
+          const tabRepos = document.getElementById('tabReposCount');
+          if (tabRepos) tabRepos.textContent = currentArmyCount;
+
+          const sidebarRepos = document.getElementById('sidebarReposCount');
+          if (sidebarRepos) sidebarRepos.textContent = currentArmyCount;
+
+          const sectionSub = document.getElementById('sectionSubtitleRepos');
+          if (sectionSub) sectionSub.textContent = `6 / ${currentArmyCount} Đội quân bóng tối được triệu hồi tiêu biểu (Xem tất cả ↗)`;
+
+          const timelineRepos = document.getElementById('timelineReposCount');
+          if (timelineRepos) timelineRepos.textContent = currentArmyCount;
+
+          const hudArmy = document.getElementById('hudArmyCount');
+          if (hudArmy) hudArmy.textContent = `${currentArmyCount} BÓNG`;
+        }
+
+        if (typeof userData.followers === 'number') {
+          const followersEl = document.getElementById('followersCount');
+          if (followersEl) followersEl.textContent = userData.followers;
+        }
+
+        if (typeof userData.following === 'number') {
+          const followingEl = document.getElementById('followingCount');
+          if (followingEl) followingEl.textContent = userData.following;
+        }
+      }
+    } catch (err) {
+      console.warn('Real-time GitHub user stats fetch failed:', err);
+    }
+
+    try {
+      // 2. Fetch all repositories to calculate real total stars
+      const reposRes = await fetch('https://api.github.com/users/ptphat77/repos?per_page=100');
+      if (reposRes.ok) {
+        const reposData = await reposRes.json();
+        if (Array.isArray(reposData)) {
+          const totalStars = reposData.reduce((acc, r) => acc + (r.stargazers_count || 0), 0);
+          const tabStars = document.getElementById('tabStarsCount');
+          if (tabStars) tabStars.textContent = totalStars;
+        }
+      }
+    } catch (err) {
+      console.warn('Real-time GitHub repos stars fetch failed:', err);
+    }
+  }
+
+  // Trigger real-time fetch on load
+  fetchRealGithubStats();
 
 });

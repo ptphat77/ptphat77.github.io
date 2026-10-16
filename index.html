@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="./style.css?v=monarch_v3">
+  <link rel="stylesheet" href="./style.css?v=live_v4">
 </head>
 <body>
   <!-- Canvas nền hiệu ứng sương mù & ngọn lửa bóng tối cuộn trào -->
@@ -58,7 +58,7 @@
         <!-- Header Nav Links -->
         <nav class="gh-nav-links">
           <a href="#overview" class="active">Tổng quan</a>
-          <a href="#pinned-repos">Kho báu & Dự án</a>
+          <a href="https://github.com/ptphat77?tab=repositories" target="_blank" rel="noopener">Kho báu & Dự án ↗</a>
           <a href="#contributions">Ma trận Đóng góp</a>
           <a href="#system-status-btn" id="openStatusModalBtn">Bảng Trạng Thái</a>
         </nav>
@@ -89,43 +89,43 @@
   <!-- ================= SUB-NAVIGATION TABS (GITHUB STANDARD) ================= -->
   <nav class="gh-tabs-bar">
     <div class="gh-tabs-container">
-      <a href="#overview" class="gh-tab active">
+      <a href="#overview" class="gh-tab active" title="Tổng quan lãnh địa">
         <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
           <path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.244a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.244a2.25 2.25 0 0 0-1.892.993.75.75 0 0 1-1.228 0A2.25 2.25 0 0 0 5.003 13H.75a.75.75 0 0 1-.75-.75V1.75Zm6.5 10.742a3.74 3.74 0 0 1-.747-.992H1.5V11.5h3.503a3.75 3.75 0 0 1 1.497.31V2.568A2.25 2.25 0 0 0 5.003 2.5H1.5v8.242h3.503c.54 0 1.05.158 1.497.43v1.32Zm1.5 0c.447-.272.957-.43 1.497-.43H14.5V2.5h-3.497a2.25 2.25 0 0 0-1.503.568v9.174c.54-.152 1.05-.31 1.5-.31Z"></path>
         </svg>
         <span>Overview</span>
       </a>
 
-      <a href="#pinned-repos" class="gh-tab">
+      <a href="https://github.com/ptphat77?tab=repositories" target="_blank" rel="noopener" class="gh-tab" title="Mở danh sách Repositories trên GitHub">
         <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
           <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h6.5a.25.25 0 0 1 0 .5h-6.5a.25.25 0 0 1-.25-.25Z"></path>
         </svg>
         <span>Repositories</span>
-        <span class="counter-badge">14</span>
+        <span class="counter-badge" id="tabReposCount">15</span>
       </a>
 
-      <a href="#projects" class="gh-tab">
+      <a href="https://github.com/ptphat77?tab=projects" target="_blank" rel="noopener" class="gh-tab" title="Mở Projects trên GitHub">
         <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
           <path d="M1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0ZM1.5 1.75v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25ZM11.75 3a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0v-7.5a.75.75 0 0 1 .75-.75Zm-8.25.75a.75.75 0 0 1 1.5 0v5.5a.75.75 0 0 1-1.5 0ZM8 3a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 3Z"></path>
         </svg>
         <span>Projects</span>
-        <span class="counter-badge">0</span>
+        <span class="counter-badge" id="tabProjectsCount">0</span>
       </a>
 
-      <a href="#packages" class="gh-tab">
+      <a href="https://github.com/ptphat77?tab=packages" target="_blank" rel="noopener" class="gh-tab" title="Mở Packages trên GitHub">
         <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
           <path d="M8.878.392a1.75 1.75 0 0 0-1.756 0l-5.25 3.045A1.75 1.75 0 0 0 1 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 0 0 1.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514ZM7.999 1.83a.25.25 0 0 1 .252 0l4.77 2.766-4.77 2.768a.25.25 0 0 1-.252 0L3.228 4.596Zm-5.499 4.19 4.75 2.756v5.394l-4.75-2.755Zm6.25 8.15V8.776l4.75-2.756v5.394Z"></path>
         </svg>
         <span>Packages</span>
-        <span class="counter-badge">0</span>
+        <span class="counter-badge" id="tabPackagesCount">0</span>
       </a>
 
-      <a href="#stars" class="gh-tab">
+      <a href="https://github.com/ptphat77?tab=stars" target="_blank" rel="noopener" class="gh-tab" title="Mở Stars trên GitHub">
         <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
           <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
         </svg>
         <span>Stars</span>
-        <span class="counter-badge">0</span>
+        <span class="counter-badge" id="tabStarsCount">1</span>
       </a>
     </div>
   </nav>
@@ -243,25 +243,31 @@
           <button class="open-hud-full-btn" id="openFullHudBtn">Xem Chi Tiết Bảng Trạng Thái ➜</button>
         </div>
 
-        <!-- Achievements Badges -->
+        <!-- Achievements Badges (Real GitHub Badges + Monarch Ranks) -->
         <div class="achievements-section">
-          <h3 class="sidebar-heading">Thành tựu Thợ săn (Achievements)</h3>
+          <a href="https://github.com/ptphat77?tab=achievements" target="_blank" rel="noopener" class="sidebar-heading-link">
+            <h3 class="sidebar-heading">Thành tựu Thợ săn (Achievements) <span class="ext-link-icon">↗</span></h3>
+          </a>
           <div class="badge-row">
-            <div class="badge-item" title="Shadow Monarch: Triệu hồi thành công đội quân bóng tối">
-              <span class="badge-symbol">👑</span>
-              <span class="badge-tooltip">Shadow Monarch</span>
-            </div>
-            <div class="badge-item" title="Demon Castle Conqueror: Vượt 100 tầng hầm ngục">
-              <span class="badge-symbol">🏰</span>
-              <span class="badge-tooltip">Castle Conqueror</span>
-            </div>
-            <div class="badge-item" title="Pull Shark: Đóng góp mã nguồn liên tục">
-              <span class="badge-symbol">🦈</span>
+            <!-- Real GitHub: Pull Shark -->
+            <a href="https://github.com/ptphat77?achievement=pull-shark&tab=achievements" target="_blank" rel="noopener" class="badge-item real-gh-badge" title="GitHub Achievement: Pull Shark (Đã merge pull requests thành công)">
+              <img src="https://github.githubassets.com/assets/pull-shark-default-498c279a747d.png" alt="Pull Shark" class="gh-badge-img">
               <span class="badge-tooltip">Pull Shark</span>
+            </a>
+            <!-- Real GitHub: Quickdraw -->
+            <a href="https://github.com/ptphat77?achievement=quickdraw&tab=achievements" target="_blank" rel="noopener" class="badge-item real-gh-badge" title="GitHub Achievement: Quickdraw (Đóng issue/PR siêu tốc trong 5 phút)">
+              <img src="https://github.githubassets.com/assets/quickdraw-default-39c6aec8ff89.png" alt="Quickdraw" class="gh-badge-img">
+              <span class="badge-tooltip">Quickdraw</span>
+            </a>
+            <!-- Solo Leveling: Shadow Monarch -->
+            <div class="badge-item monarch-badge" title="Solo Leveling: Shadow Monarch (Chỉ huy toàn bộ đội quân bóng tối)">
+              <span class="badge-symbol">👑</span>
+              <span class="badge-tooltip">Monarch</span>
             </div>
-            <div class="badge-item" title="Arctic Code Vault: Bất tử hóa dữ liệu">
-              <span class="badge-symbol">❄️</span>
-              <span class="badge-tooltip">Code Vault</span>
+            <!-- Solo Leveling: S-Rank Hunter -->
+            <div class="badge-item monarch-badge" title="Hunter Rank: National S-Rank Software Engineer">
+              <span class="badge-symbol">⚡</span>
+              <span class="badge-tooltip">S-Rank</span>
             </div>
           </div>
         </div>
@@ -296,7 +302,7 @@
             <span class="title-rune">⚔️</span>
             <span>Kho Báu & Cổ Vật Ghim (Pinned Repositories)</span>
           </h2>
-          <span class="section-subtitle">6 / 14 Đội quân bóng tối được triệu hồi tiêu biểu</span>
+          <a href="https://github.com/ptphat77?tab=repositories" target="_blank" rel="noopener" class="section-subtitle-link"><span class="section-subtitle" id="sectionSubtitleRepos">6 / 15 Đội quân bóng tối được triệu hồi tiêu biểu (Xem tất cả ↗)</span></a>
         </div>
 
         <div class="pinned-grid">
@@ -572,7 +578,7 @@
             <div class="timeline-badge icon-star">⭐</div>
             <div class="timeline-body">
               <div class="timeline-heading">
-                <strong>Đạt mốc 14 Repositories</strong> dưới sự chỉ huy của Quân Vương
+                <strong>Đạt mốc <span id="timelineReposCount">15</span> Repositories</strong> dưới sự chỉ huy của Quân Vương
               </div>
               <span class="timeline-time">Tuần trước</span>
             </div>
@@ -668,7 +674,7 @@
               </div>
               <div class="attr-box">
                 <span class="attr-name">QUÂN ĐOÀN (ARMY)</span>
-                <span class="attr-val">14 BÓNG</span>
+                <span class="attr-val" id="hudArmyCount">15 BÓNG</span>
                 <span class="attr-sub">Số lượng repo trong tay</span>
               </div>
             </div>
@@ -713,6 +719,6 @@
   </footer>
 
   <!-- Script File -->
-  <script src="./script.js"></script>
+  <script src="./script.js?v=live_v4"></script>
 </body>
 </html>
