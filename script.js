@@ -274,69 +274,124 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ================= 5. REAL LIVE GITHUB CONTRIBUTION HEATMAP =================
+  // ================= 5. REAL LIVE GITHUB CONTRIBUTION HEATMAP (DYNAMIC 2021-2026+) =================
   const heatmapContainer = document.getElementById('heatmapContainer');
   const heatmapTotalCount = document.getElementById('heatmapTotalCount');
-  const yearButtons = document.querySelectorAll('.year-btn');
+  const yearSelector = document.getElementById('yearSelector') || document.querySelector('.year-selector');
 
-  async function loadRealGitHubContributions(year = 'last') {
+  let cachedContributionData = null;
+  let activeContributionYear = '2026';
+
+  function renderContributionGrid(contributions, totalCount, yearLabel) {
     if (!heatmapContainer) return;
 
     if (heatmapTotalCount) {
-      heatmapTotalCount.textContent = 'Đang đồng bộ dữ liệu thực tế từ GitHub...';
+      heatmapTotalCount.innerHTML = `<strong>${totalCount} đóng góp năng lượng thực tế</strong> trong năm ${yearLabel}`;
+    }
+
+    heatmapContainer.innerHTML = '';
+    const fragment = document.createDocumentFragment();
+
+    contributions.forEach(item => {
+      const cell = document.createElement('div');
+      cell.classList.add('heatmap-cell');
+
+      // Level mapping (0 to 4)
+      const lvl = Math.min(4, Math.max(0, item.level || 0));
+      cell.classList.add(`lvl-${lvl}`);
+
+      const dateObj = new Date(item.date);
+      const dateStr = dateObj.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric', year: 'numeric' });
+      cell.title = item.count > 0
+        ? `${item.count} đóng góp năng lượng vào ${dateStr}`
+        : `0 đóng góp (Bóng tối ngủ yên) vào ${dateStr}`;
+
+      cell.addEventListener('mouseenter', () => {
+        if (lvl > 0 && Math.random() > 0.4) {
+          playSystemChime();
+        }
+      });
+
+      fragment.appendChild(cell);
+    });
+
+    heatmapContainer.appendChild(fragment);
+  }
+
+  function displayYearContributions(year) {
+    if (!cachedContributionData) return;
+    activeContributionYear = year;
+
+    // Filter contributions for the selected year
+    const yearContributions = cachedContributionData.contributions.filter(c => c.date && c.date.startsWith(year));
+    const totalCount = (cachedContributionData.total && cachedContributionData.total[year] !== undefined)
+      ? cachedContributionData.total[year]
+      : yearContributions.reduce((sum, item) => sum + (item.count || 0), 0);
+
+    renderContributionGrid(yearContributions, totalCount, year);
+
+    // Update active state on buttons
+    if (yearSelector) {
+      const buttons = yearSelector.querySelectorAll('.year-btn');
+      buttons.forEach(btn => {
+        const btnYear = btn.getAttribute('data-year') || btn.textContent.trim();
+        if (btnYear === year) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+  }
+
+  function setupDynamicYearButtons(availableYears) {
+    if (!yearSelector) return;
+    yearSelector.innerHTML = '';
+
+    availableYears.forEach(year => {
+      const btn = document.createElement('button');
+      btn.className = `year-btn ${year === activeContributionYear ? 'active' : ''}`;
+      btn.setAttribute('data-year', year);
+      btn.textContent = year;
+
+      btn.addEventListener('click', () => {
+        initAudio();
+        playSystemChime();
+        displayYearContributions(year);
+      });
+
+      yearSelector.appendChild(btn);
+    });
+  }
+
+  async function loadRealGitHubContributions() {
+    if (!heatmapContainer) return;
+
+    if (heatmapTotalCount) {
+      heatmapTotalCount.textContent = 'Đang đồng bộ dữ liệu đóng góp từ GitHub (2021 - 2026)...';
     }
 
     try {
-      const apiUrl = `https://github-contributions-api.jogruber.de/v4/ptphat77?y=${year}`;
+      // Fetch full multi-year history without year query to get all years dynamically
+      const apiUrl = 'https://github-contributions-api.jogruber.de/v4/ptphat77';
       const response = await fetch(apiUrl, { cache: 'no-cache' });
       if (!response.ok) throw new Error('API response not ok');
 
       const data = await response.json();
-      const contributions = data.contributions || [];
+      cachedContributionData = data;
 
-      // Calculate total
-      let totalCount = 0;
-      if (year === 'last' && data.total && data.total.lastYear !== undefined) {
-        totalCount = data.total.lastYear;
-      } else if (data.total && data.total[year] !== undefined) {
-        totalCount = data.total[year];
-      } else {
-        totalCount = contributions.reduce((sum, item) => sum + (item.count || 0), 0);
-      }
+      // Extract all years dynamically from data.total (sorted descending: 2026, 2025, 2024, 2023, 2022, 2021)
+      const availableYears = Object.keys(data.total || {}).sort((a, b) => b - a);
 
-      if (heatmapTotalCount) {
-        const timeLabel = year === 'last' ? 'năm qua' : `năm ${year}`;
-        heatmapTotalCount.innerHTML = `<strong>${totalCount} đóng góp năng lượng thực tế</strong> trong ${timeLabel}`;
-      }
+      // Default active year: latest year (e.g. 2026)
+      const defaultYear = availableYears.length > 0 ? availableYears[0] : '2026';
+      activeContributionYear = defaultYear;
 
-      // Clear previous cells
-      heatmapContainer.innerHTML = '';
-      const fragment = document.createDocumentFragment();
+      // Generate dynamic buttons for ALL years
+      setupDynamicYearButtons(availableYears);
 
-      contributions.forEach(item => {
-        const cell = document.createElement('div');
-        cell.classList.add('heatmap-cell');
-
-        // Level mapping (0 to 4)
-        const lvl = Math.min(4, Math.max(0, item.level || 0));
-        cell.classList.add(`lvl-${lvl}`);
-
-        const dateObj = new Date(item.date);
-        const dateStr = dateObj.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric', year: 'numeric' });
-        cell.title = item.count > 0
-          ? `${item.count} đóng góp năng lượng vào ${dateStr}`
-          : `0 đóng góp (Bóng tối ngủ yên) vào ${dateStr}`;
-
-        cell.addEventListener('mouseenter', () => {
-          if (lvl > 0 && Math.random() > 0.4) {
-            playSystemChime();
-          }
-        });
-
-        fragment.appendChild(cell);
-      });
-
-      heatmapContainer.appendChild(fragment);
+      // Render default year grid
+      displayYearContributions(defaultYear);
 
     } catch (err) {
       console.warn('Could not load real GitHub contribution API, falling back to simulated live stream:', err);
@@ -347,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderFallbackHeatmap() {
     if (!heatmapContainer) return;
     if (heatmapTotalCount) {
-      heatmapTotalCount.textContent = '383 đóng góp năng lượng thực tế từ ptphat77';
+      heatmapTotalCount.textContent = '401 đóng góp năng lượng thực tế từ ptphat77 trong năm 2026';
     }
     heatmapContainer.innerHTML = '';
     const totalDays = 52 * 7;
@@ -369,20 +424,8 @@ document.addEventListener('DOMContentLoaded', () => {
     heatmapContainer.appendChild(fragment);
   }
 
-  // Handle Year button switching
-  yearButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      initAudio();
-      playSystemChime();
-      yearButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const selectedYear = btn.textContent.trim();
-      loadRealGitHubContributions(selectedYear === '2026' ? 'last' : selectedYear);
-    });
-  });
-
   // Initial load real data
-  loadRealGitHubContributions('last');
+  loadRealGitHubContributions();
 
   // ================= 6. 3D CARD TILT EFFECT =================
   const tiltCards = document.querySelectorAll('[data-tilt]');
