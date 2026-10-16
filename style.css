@@ -500,105 +500,94 @@ body.screen-quake {
   gap: 16px;
 }
 
-/* AVATAR DUAL-RING MONARCH FLAMES */
+/* ================= SUNG JINWOO MONARCH FLAME RING AURA ================= */
 .avatar-aura-wrapper {
   position: relative;
   width: 290px;
   height: 290px;
-  margin: 0 auto;
+  margin: 60px auto 10px; /* added top margin so the tall flame crest has plenty of headroom */
   border-radius: 50%;
-  padding: 8px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(5, 6, 10, 0.9) 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.flame-ring {
+/* FLAME RING WRAPPER: Perfectly wrapped around the 290px avatar circle */
+.monarch-flame-halo {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50%;
+  width: 620px;
+  height: 620px;
+  left: 50%;
+  top: -277px;
+  transform: translateX(-50%);
   pointer-events: none;
+  z-index: 5;
+  mix-blend-mode: screen;
 }
 
-.ring-outer {
-  border: 2px dashed rgba(0, 240, 255, 0.65);
-  animation: spinOuter 22s linear infinite;
-  box-shadow: 0 0 25px var(--monarch-blue-glow), inset 0 0 25px var(--monarch-purple-glow);
+.main-flame {
+  filter: drop-shadow(0 0 16px rgba(0, 240, 255, 0.9)) drop-shadow(0 0 35px rgba(124, 58, 237, 0.7));
+  animation: flameSurge 2.8s ease-in-out infinite alternate;
 }
 
-.ring-inner {
-  border: 2px solid transparent;
-  border-top-color: var(--monarch-purple);
-  border-bottom-color: var(--monarch-blue);
-  animation: spinInner 12s linear infinite reverse;
+.echo-flame {
+  opacity: 0.65;
+  filter: drop-shadow(0 0 25px rgba(0, 240, 255, 0.8)) drop-shadow(0 0 50px rgba(139, 92, 246, 0.9));
+  animation: flameFlicker 1.9s ease-in-out infinite alternate;
 }
 
-@keyframes spinOuter {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@keyframes flameSurge {
+  0% {
+    transform: translateX(-50%) scale(0.985);
+    filter: drop-shadow(0 0 14px rgba(0, 240, 255, 0.85)) drop-shadow(0 0 30px rgba(124, 58, 237, 0.65));
+  }
+  50% {
+    transform: translateX(-50%) scale(1.025);
+    filter: drop-shadow(0 0 24px rgba(0, 240, 255, 1)) drop-shadow(0 0 45px rgba(139, 92, 246, 0.9));
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    filter: drop-shadow(0 0 18px rgba(0, 240, 255, 0.9)) drop-shadow(0 0 35px rgba(124, 58, 237, 0.75));
+  }
 }
 
-@keyframes spinInner {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
+@keyframes flameFlicker {
+  0% {
+    transform: translateX(-50%) scale(1.01) rotate(-0.5deg);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.03) rotate(0.8deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-50%) scale(1) rotate(-0.2deg);
+    opacity: 0.6;
+  }
 }
 
+/* Avatar Circle inside the flame ring */
 .avatar-img {
-  width: 100%;
-  height: 100%;
+  width: 290px;
+  height: 290px;
   border-radius: 50%;
   object-fit: cover;
   object-position: center 25%;
-  border: 3px solid rgba(0, 240, 255, 0.4);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+  border: 3px solid rgba(0, 240, 255, 0.6);
+  box-shadow: 
+    0 0 20px rgba(0, 240, 255, 0.5),
+    inset 0 0 20px rgba(0, 240, 255, 0.3);
+  position: relative;
+  z-index: 2;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
   cursor: pointer;
 }
 
 .avatar-aura-wrapper:hover .avatar-img {
   transform: scale(1.02);
-  filter: drop-shadow(0 0 15px var(--monarch-blue));
+  border-color: #ffffff;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.9), 0 0 50px rgba(139, 92, 246, 0.7);
 }
-
-/* ================= SUNG JINWOO EYE LIGHTNING TRAIL ================= */
-.monarch-lightning-trail {
-  position: absolute;
-  top: -80px;
-  left: -40px;
-  width: 440px;
-  height: 440px;
-  pointer-events: none;
-  z-index: 15;
-  overflow: visible;
-}
-
-.trail-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Origin Point on the Avatar Rim */
-.trail-origin-node {
-  position: absolute;
-  /* Positioned at the top-right perimeter of the 290px avatar (offset by trail box 40px left, 80px top) */
-  top: 122px;
-  left: 292px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 
-    0 0 10px 3px #ffffff,
-    0 0 25px 8px var(--monarch-blue),
-    0 0 50px 18px var(--monarch-blue-glow);
-  transform: translate(-50%, -50%);
-  animation: originPulse 1.8s ease-in-out infinite alternate;
-}
-
-@keyframes originPulse {
-  0% { transform: translate(-50%, -50%) scale(0.85); box-shadow: 0 0 8px 2px #fff, 0 0 20px 6px var(--monarch-blue); }
   50% { transform: translate(-50%, -50%) scale(1.3); box-shadow: 0 0 16px 5px #fff, 0 0 35px 12px var(--monarch-blue), 0 0 60px 22px var(--monarch-purple-glow); }
   100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px 3px #fff, 0 0 25px 8px var(--monarch-blue); }
 }
