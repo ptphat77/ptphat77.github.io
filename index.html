@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ptphat77 (Shadow Monarch) · GitHub Portfolio</title>
+  
+  <!-- SEO & Social Meta -->
+  <meta name="description" content="Portfolio của ptphat77 - S-Rank Hunter & Software Architect, thiết kế theo phong cách Quân Vương Bóng Tối Sung Jinwoo (Solo Leveling).">
+  <meta property="og:title" content="ptphat77 · The Shadow Monarch Portfolio">
+  <meta property="og:description" content="Khám phá các dự án phần mềm, smart contracts và AI trong lãnh địa bóng tối của ptphat77.">
+  <meta property="og:image" content="./assets/sung_jinwoo_avatar.jpg">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+
+  <!-- Google Fonts: Inter (UI), Syne & Cinzel (Monarch headers), JetBrains Mono (Code/HUD) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- Canvas nền hiệu ứng sương mù & ngọn lửa bóng tối cuộn trào -->
+  <canvas id="shadowCanvas"></canvas>
+
+  <!-- Lớp phủ hiệu ứng Shockwave khi bấm ARISE -->
+  <div id="ariseShockwave" class="shockwave-overlay"></div>
+  <div id="shadowArmyOverlay" class="shadow-army-bg"></div>
+
+  <!-- Thông báo System Pop-up nổi -->
+  <div id="systemToast" class="system-toast">
+    <div class="system-toast-header">
+      <span class="system-tag">[HỆ THỐNG]</span>
+      <span class="system-time">VỪA XONG</span>
+    </div>
+    <div class="system-toast-body" id="toastMessage">Chào mừng Thợ săn đã bước vào lãnh địa bóng tối!</div>
+  </div>
+
+  <!-- ================= TOP HEADER (GITHUB STANDARD + MONARCH AURA) ================= -->
+  <header class="gh-header">
+    <div class="gh-header-inner">
+      <div class="gh-header-left">
+        <!-- Octocat with Monarch Crown / Blue Glow -->
+        <a href="#overview" class="gh-logo-link" title="GitHub Shadow Domain">
+          <svg class="gh-octocat" viewBox="0 0 16 16" width="32" height="32" fill="currentColor">
+            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+          </svg>
+        </a>
+
+        <!-- Search Bar Styled like Hunter Radar -->
+        <div class="gh-search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="repoSearchInput" placeholder="Tìm kiếm kho lưu trữ hoặc kỹ năng... (Nhấn '/' để tìm)" autocomplete="off">
+          <kbd class="search-kbd">/</kbd>
+        </div>
+
+        <!-- Header Nav Links -->
+        <nav class="gh-nav-links">
+          <a href="#overview" class="active">Tổng quan</a>
+          <a href="#pinned-repos">Kho báu & Dự án</a>
+          <a href="#contributions">Ma trận Đóng góp</a>
+          <a href="#system-status-btn" id="openStatusModalBtn">Bảng Trạng Thái</a>
+        </nav>
+      </div>
+
+      <div class="gh-header-right">
+        <!-- Audio Synthesizer Toggle -->
+        <button id="soundToggleBtn" class="hud-btn hud-sound" title="Bật/Tắt âm thanh Hệ thống & Tiếng Hào quang">
+          <span id="soundIcon">🔊</span>
+          <span class="sound-label">SFX: ON</span>
+        </button>
+
+        <!-- S-Rank Notification Bell with Pulse -->
+        <div class="notification-wrapper" id="notifBell" title="Thông báo Hệ thống">
+          <span class="bell-icon">🔔</span>
+          <span class="notif-badge">1</span>
+        </div>
+
+        <!-- Quick Status Mini Badge -->
+        <div class="hunter-rank-badge" title="Cấp bậc Thợ săn">
+          <span class="rank-letter">S</span>
+          <span class="rank-label">MONARCH</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= SUB-NAVIGATION TABS (GITHUB STANDARD) ================= -->
+  <nav class="gh-tabs-bar">
+    <div class="gh-tabs-container">
+      <a href="#overview" class="gh-tab active">
+        <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+          <path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.244a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.244a2.25 2.25 0 0 0-1.892.993.75.75 0 0 1-1.228 0A2.25 2.25 0 0 0 5.003 13H.75a.75.75 0 0 1-.75-.75V1.75Zm6.5 10.742a3.74 3.74 0 0 1-.747-.992H1.5V11.5h3.503a3.75 3.75 0 0 1 1.497.31V2.568A2.25 2.25 0 0 0 5.003 2.5H1.5v8.242h3.503c.54 0 1.05.158 1.497.43v1.32Zm1.5 0c.447-.272.957-.43 1.497-.43H14.5V2.5h-3.497a2.25 2.25 0 0 0-1.503.568v9.174c.54-.152 1.05-.31 1.5-.31Z"></path>
+        </svg>
+        <span>Overview</span>
+      </a>
+
+      <a href="#pinned-repos" class="gh-tab">
+        <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+          <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h6.5a.25.25 0 0 1 0 .5h-6.5a.25.25 0 0 1-.25-.25Z"></path>
+        </svg>
+        <span>Repositories</span>
+        <span class="counter-badge">14</span>
+      </a>
+
+      <a href="#projects" class="gh-tab">
+        <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+          <path d="M1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0ZM1.5 1.75v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25ZM11.75 3a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0v-7.5a.75.75 0 0 1 .75-.75Zm-8.25.75a.75.75 0 0 1 1.5 0v5.5a.75.75 0 0 1-1.5 0ZM8 3a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 3Z"></path>
+        </svg>
+        <span>Projects</span>
+        <span class="counter-badge">0</span>
+      </a>
+
+      <a href="#packages" class="gh-tab">
+        <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+          <path d="M8.878.392a1.75 1.75 0 0 0-1.756 0l-5.25 3.045A1.75 1.75 0 0 0 1 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 0 0 1.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514ZM7.999 1.83a.25.25 0 0 1 .252 0l4.77 2.766-4.77 2.768a.25.25 0 0 1-.252 0L3.228 4.596Zm-5.499 4.19 4.75 2.756v5.394l-4.75-2.755Zm6.25 8.15V8.776l4.75-2.756v5.394Z"></path>
+        </svg>
+        <span>Packages</span>
+        <span class="counter-badge">0</span>
+      </a>
+
+      <a href="#stars" class="gh-tab">
+        <svg class="tab-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+          <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
+        </svg>
+        <span>Stars</span>
+        <span class="counter-badge">0</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ================= MAIN LAYOUT CONTAINER ================= -->
+  <main class="gh-main-container" id="overview">
+    
+    <!-- LEFT SIDEBAR: PROFILE & SUNG JINWOO MONARCH IDENTITY -->
+    <aside class="gh-sidebar">
+      
+      <!-- Avatar Section with Dynamic Dual-Ring Aura & Glow -->
+      <div class="avatar-card">
+        <div class="avatar-aura-wrapper" id="avatarContainer">
+          <!-- Animated Flame Rings -->
+          <div class="flame-ring ring-outer"></div>
+          <div class="flame-ring ring-inner"></div>
+          <div class="flame-particles"></div>
+
+          <!-- Avatar Image: Default Sung Jinwoo Monarch (can toggle with github avatar) -->
+          <img id="avatarImg" src="./assets/sung_jinwoo_avatar.jpg" alt="ptphat77 - Sung Jinwoo Shadow Monarch" class="avatar-img">
+          
+          <!-- Piercing Blue Monarch Eye Overlay Glow -->
+          <div class="monarch-eye-glow left-eye"></div>
+          <div class="monarch-eye-glow right-eye"></div>
+
+          <!-- Avatar Switcher Floating Button -->
+          <button id="toggleAvatarBtn" class="avatar-toggle-pill" title="Chuyển đổi giữa Avatar Sung Jinwoo và GitHub Avatar nguyên bản">
+            <span class="switch-icon">🔄</span> Đổi Avatar
+          </button>
+        </div>
+
+        <!-- Identity & Monarch Titles -->
+        <div class="vcard-names">
+          <h1 class="vcard-fullname">
+            <span>ptphat77</span>
+            <span class="monarch-insignia" title="Quân Vương Bóng Tối">👑</span>
+          </h1>
+          <div class="vcard-username">@ptphat77</div>
+          <div class="vcard-rank-tag">
+            <span class="glow-dot"></span> S-RANK NATIONAL HUNTER
+          </div>
+        </div>
+
+        <!-- THE LEGENDARY "ARISE" (일어서라) BUTTON -->
+        <button id="ariseBtn" class="arise-action-btn">
+          <span class="arise-lightning">⚡</span>
+          <span class="arise-text">ARISE (TRỖI DẬY)</span>
+          <span class="arise-sub">일어서라 · SHADOW EXTRACTION</span>
+          <div class="arise-energy-wave"></div>
+        </button>
+
+        <!-- Bio with Hunter & Developer Lore -->
+        <div class="vcard-bio">
+          <p class="bio-text">
+            <strong>Shadow Monarch & Software Architect.</strong><br>
+            Triệu hồi code tinh khiết từ vực thẳm của lỗi và hầm ngục phức tạp. Chuyên sâu Smart Contracts, Fullstack Web & AI Engineering.
+          </p>
+          <div class="quote-box">
+            <em>"Kẻ yếu dựa vào may mắn, Thợ săn mạnh dựa vào Level."</em>
+          </div>
+        </div>
+
+        <!-- Hunter & GitHub Stats -->
+        <div class="vcard-stats">
+          <a href="#followers" class="stat-item">
+            <span class="stat-icon">👥</span>
+            <strong>0</strong> <span class="stat-text">followers</span>
+          </a>
+          <span class="stat-dot">·</span>
+          <a href="#following" class="stat-item">
+            <strong>6</strong> <span class="stat-text">following</span>
+          </a>
+          <span class="stat-dot">·</span>
+          <a href="#repos" class="stat-item highlight-stat">
+            <strong>14</strong> <span class="stat-text">Shadows</span>
+          </a>
+        </div>
+
+        <!-- Details / Meta Information -->
+        <ul class="vcard-details">
+          <li>
+            <span class="detail-icon">📍</span>
+            <span>Shadow Domain / Ho Chi Minh City, VN</span>
+          </li>
+          <li>
+            <span class="detail-icon">🛡️</span>
+            <span>Guild: <strong>Ahjin Guild (Founder)</strong></span>
+          </li>
+          <li>
+            <span class="detail-icon">⚔️</span>
+            <span>Vũ khí: <strong>Kamish's Wrath (Dual Daggers)</strong></span>
+          </li>
+          <li>
+            <span class="detail-icon">🔗</span>
+            <a href="https://github.com/ptphat77" target="_blank" rel="noopener">github.com/ptphat77</a>
+          </li>
+        </ul>
+
+        <!-- MINI SYSTEM STATUS HUD CARD -->
+        <div class="mini-status-card" id="miniStatusCard">
+          <div class="mini-status-header">
+            <span class="status-pulse-circle"></span>
+            <span class="status-title">SYSTEM HUD · PLAYER STATUS</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-label"><span>HP</span> <span>100,000 / 100,000</span></div>
+            <div class="bar-track hp-track"><div class="bar-fill hp-fill" style="width: 100%;"></div></div>
+          </div>
+          <div class="bar-group">
+            <div class="bar-label"><span>MP (MANA)</span> <span>∞ / ∞</span></div>
+            <div class="bar-track mp-track"><div class="bar-fill mp-fill" style="width: 100%;"></div></div>
+          </div>
+          <div class="mini-stats-grid">
+            <div class="stat-pill"><span class="k">LVL</span><span class="v">99</span></div>
+            <div class="stat-pill"><span class="k">STR</span><span class="v">324</span></div>
+            <div class="stat-pill"><span class="k">AGI</span><span class="v">310</span></div>
+            <div class="stat-pill"><span class="k">INT</span><span class="v">345</span></div>
+          </div>
+          <button class="open-hud-full-btn" id="openFullHudBtn">Xem Chi Tiết Bảng Trạng Thái ➜</button>
+        </div>
+
+        <!-- Achievements Badges -->
+        <div class="achievements-section">
+          <h3 class="sidebar-heading">Thành tựu Thợ săn (Achievements)</h3>
+          <div class="badge-row">
+            <div class="badge-item" title="Shadow Monarch: Triệu hồi thành công đội quân bóng tối">
+              <span class="badge-symbol">👑</span>
+              <span class="badge-tooltip">Shadow Monarch</span>
+            </div>
+            <div class="badge-item" title="Demon Castle Conqueror: Vượt 100 tầng hầm ngục">
+              <span class="badge-symbol">🏰</span>
+              <span class="badge-tooltip">Castle Conqueror</span>
+            </div>
+            <div class="badge-item" title="Pull Shark: Đóng góp mã nguồn liên tục">
+              <span class="badge-symbol">🦈</span>
+              <span class="badge-tooltip">Pull Shark</span>
+            </div>
+            <div class="badge-item" title="Arctic Code Vault: Bất tử hóa dữ liệu">
+              <span class="badge-symbol">❄️</span>
+              <span class="badge-tooltip">Code Vault</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT: QUEST NOTICE, PINNED REPOS, CONTRIBUTION MATRIX, TIMELINE -->
+    <section class="gh-content">
+
+      <!-- SYSTEM URGENT QUEST BANNER -->
+      <div class="system-quest-banner">
+        <div class="quest-alert-glitch">
+          <span class="alert-icon">⚠️</span>
+          <span class="alert-title">[THÔNG BÁO HỆ THỐNG: NHIỆM VỤ HÀNG NGÀY ĐÃ KÍCH HOẠT]</span>
+        </div>
+        <div class="quest-content">
+          <h2 class="quest-name">Nhiệm Vụ: Chuẩn Bị Cho Sự Trỗi Dậy Của Công Nghệ Mới</h2>
+          <p class="quest-desc">
+            Vượt qua 100 dòng mã phức tạp, trích xuất dữ liệu Smart Contracts an toàn, và triển khai các mô hình AI dự báo chuẩn xác. Thất bại sẽ bị chuyển đến Hầm ngục Hình phạt!
+          </p>
+          <div class="quest-reward">
+            <span>Phần thưởng:</span> <strong>+3 Điểm Chỉ số Toàn diện · Danh hiệu "Bug Extractor"</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- PINNED REPOSITORIES SECTION (GRID OF 6 BALANCED S-RANK CARDS) -->
+      <div class="pinned-section" id="pinned-repos">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="title-rune">⚔️</span>
+            <span>Kho Báu & Cổ Vật Ghim (Pinned Repositories)</span>
+          </h2>
+          <span class="section-subtitle">6 / 14 Đội quân bóng tối được triệu hồi tiêu biểu</span>
+        </div>
+
+        <div class="pinned-grid">
+          
+          <!-- REPO 1: demeter -->
+          <article class="repo-card s-rank-card" data-tilt>
+            <div class="card-glow-border"></div>
+            <div class="card-inner">
+              <div class="repo-card-top">
+                <span class="repo-rank-tag s-rank">S-RANK</span>
+                <span class="repo-type-tag">Public</span>
+              </div>
+              <h3 class="repo-name">
+                <a href="https://github.com/ptphat77/demeter" target="_blank" rel="noopener">
+                  <svg class="repo-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h6.5a.25.25 0 0 1 0 .5h-6.5a.25.25 0 0 1-.25-.25Z"></path></svg>
+                  demeter
+                </a>
+              </h3>
+              <p class="repo-desc">
+                Công cụ thu thập và tạo lập bộ dữ liệu chuyên sâu cho Smart Contracts nhằm phân tích bảo mật & lỗ hổng trên Blockchain.
+              </p>
+              <div class="repo-footer">
+                <div class="repo-lang">
+                  <span class="lang-color python-color"></span>
+                  <span>Python</span>
+                </div>
+                <div class="repo-stars">
+                  <span>⭐ 1</span>
+                </div>
+                <div class="repo-power">
+                  <span>Mana: 850</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- REPO 2: Fashion_shop -->
+          <article class="repo-card a-rank-card" data-tilt>
+            <div class="card-glow-border"></div>
+            <div class="card-inner">
+              <div class="repo-card-top">
+                <span class="repo-rank-tag a-rank">A-RANK</span>
+                <span class="repo-type-tag">Public</span>
+              </div>
+              <h3 class="repo-name">
+                <a href="https://github.com/ptphat77/Fashion_shop" target="_blank" rel="noopener">
+                  <svg class="repo-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h6.5a.25.25 0 0 1 0 .5h-6.5a.25.25 0 0 1-.25-.25Z"></path></svg>
+                  Fashion_shop
+                </a>
+              </h3>
+              <p class="repo-desc">
+                Nền tảng thương mại điện tử hoàn chỉnh xây dựng với NodeJS, ExpressJS, MongoDB cùng hệ thống bảo vệ bảo mật nâng cao.
+              </p>
+              <div class="repo-footer">
+                <div class="repo-lang">
+                  <span class="lang-color node-color"></span>
+                  <span>Node.js / CSS</span>
+                </div>
+                <div class="repo-stars">
+                  <span>⭐ 0</span>
+                </div>
+                <div class="repo-power">
+                  <span>Mana: 620</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- REPO 3: Smart-Parking-System -->
+          <article class="repo-card a-rank-card" data-tilt>
+            <div class="card-glow-border"></div>
+            <div class="card-inner">
+              <div class="repo-card-top">
+                <span class="repo-rank-tag a-rank">A-RANK</span>
+                <span class="repo-type-tag">Public</span>
+              </div>
+              <h3 class="repo-name">
+                <a href="https://github.com/ptphat77/Smart-Parking-System" target="_blank" rel="noopener">
+                  <svg class="repo-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h6.5a.25.25 0 0 1 0 .5h-6.5a.25.25 0 0 1-.25-.25Z"></path></svg>
+                  Smart-Parking-System
+                </a>
+              </h3>
+              <p class="repo-desc">
+                Hệ thống giám sát và quản lý bãi đỗ xe thông minh thời gian thực, tối ưu hóa lưu lượng vị trí đỗ xe qua cảm biến IoT.
+              </p>
+              <div class="repo-footer">
+                <div class="repo-lang">
+                  <span class="lang-color js-color"></span>
+                  <span>JavaScript</span>
+                </div>
+                <div class="repo-stars">
+                  <span>⭐ 0</span>
+                </div>
+                <div class="repo-power">
+                  <span>Mana: 580</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- REPO 4: ai-trading (Added to balance 6 grid) -->
+          <article class="repo-card s-rank-card" data-tilt>
+            <div class="card-glow-border"></div>
+            <div class="card-inner">
+              <div class="repo-card-top">
+                <span class="repo-rank-tag s-rank">S-RANK</span>
+                <span class="repo-type-tag">Public</span>
+              </div>
+              <h3 class="repo-name">
+                <a href="https://github.com/ptphat77/ai-trading" target="_blank" rel="noopener">
+                  <svg class="repo-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h6.5a.25.25 0 0 1 0 .5h-6.5a.25.25 0 0 1-.25-.25Z"></path></svg>
+                  ai-trading
+                </a>
+              </h3>
+              <p class="repo-desc">
+                Hệ thống giao dịch thuật toán tích hợp trí tuệ nhân tạo, phân tích mô hình nến kỹ thuật và dự báo xu hướng thị trường tài chính.
+              </p>
+              <div class="repo-footer">
+                <div class="repo-lang">
+                  <span class="lang-color js-color"></span>
+                  <span>JavaScript / Python</span>
+                </div>
+                <div class="repo-stars">
+                  <span>⭐ 0</span>
+                </div>
+                <div class="repo-power">
+                  <span>Mana: 920</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- REPO 5: detect_abnormal_tx (Added) -->
+          <article class="repo-card s-rank-card" data-tilt>
+            <div class="card-glow-border"></div>
+            <div class="card-inner">
+              <div class="repo-card-top">
+                <span class="repo-rank-tag s-rank">S-RANK</span>
+                <span class="repo-type-tag">Public</span>
+              </div>
+              <h3 class="repo-name">
+                <a href="https://github.com/ptphat77/detect_abnormal_tx" target="_blank" rel="noopener">
+                  <svg class="repo-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h6.5a.25.25 0 0 1 0 .5h-6.5a.25.25 0 0 1-.25-.25Z"></path></svg>
+                  detect_abnormal_tx
+                </a>
+              </h3>
+              <p class="repo-desc">
+                Mô hình Machine Learning phát hiện các giao dịch bất thường, gian lận và rửa tiền trên sổ cái blockchain phân tán.
+              </p>
+              <div class="repo-footer">
+                <div class="repo-lang">
+                  <span class="lang-color jupyter-color"></span>
+                  <span>Jupyter Notebook</span>
+                </div>
+                <div class="repo-stars">
+                  <span>⭐ 0</span>
+                </div>
+                <div class="repo-power">
+                  <span>Mana: 780</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- REPO 6: solve-quadratic-2_solidity (Added) -->
+          <article class="repo-card a-rank-card" data-tilt>
+            <div class="card-glow-border"></div>
+            <div class="card-inner">
+              <div class="repo-card-top">
+                <span class="repo-rank-tag a-rank">A-RANK</span>
+                <span class="repo-type-tag">Public</span>
+              </div>
+              <h3 class="repo-name">
+                <a href="https://github.com/ptphat77/solve-quadratic-2_solidity" target="_blank" rel="noopener">
+                  <svg class="repo-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h6.5a.25.25 0 0 1 0 .5h-6.5a.25.25 0 0 1-.25-.25Z"></path></svg>
+                  solve-quadratic-2_solidity
+                </a>
+              </h3>
+              <p class="repo-desc">
+                Hợp đồng thông minh Solidity tối ưu hóa khí đốt (gas-efficient), giải quyết thuật toán toán học trực tiếp trên máy ảo EVM.
+              </p>
+              <div class="repo-footer">
+                <div class="repo-lang">
+                  <span class="lang-color solidity-color"></span>
+                  <span>Solidity</span>
+                </div>
+                <div class="repo-stars">
+                  <span>⭐ 0</span>
+                </div>
+                <div class="repo-power">
+                  <span>Mana: 690</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- CONTRIBUTION ACTIVITY HEATMAP (SHADOW EXTRACTION MATRIX) -->
+      <div class="contrib-section" id="contributions">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="title-rune">🔮</span>
+            <span>Ma Trận Năng Lượng Đóng Góp (Shadow Extraction Matrix)</span>
+          </h2>
+          <div class="year-selector">
+            <button class="year-btn active">2026</button>
+            <button class="year-btn">2025</button>
+            <button class="year-btn">2024</button>
+          </div>
+        </div>
+
+        <div class="heatmap-card">
+          <div class="heatmap-header">
+            <span>248 đóng góp năng lượng trong năm qua</span>
+            <span class="legend-text">Cường độ mana:</span>
+            <div class="heatmap-legend">
+              <span class="legend-box lvl-0" title="0 commits (Bóng tối ngủ yên)"></span>
+              <span class="legend-box lvl-1" title="1-3 commits (Tàn tro bốc cháy)"></span>
+              <span class="legend-box lvl-2" title="4-6 commits (Khói tím trỗi dậy)"></span>
+              <span class="legend-box lvl-3" title="7-9 commits (Sấm sét lam ngọc)"></span>
+              <span class="legend-box lvl-4" title="10+ commits (Quân vương thức tỉnh)"></span>
+            </div>
+          </div>
+
+          <!-- Dynamic Grid Canvas / Heatmap Structure -->
+          <div class="heatmap-grid" id="heatmapContainer">
+            <!-- Heatmap blocks generated dynamically by JS for smooth hover & stats -->
+          </div>
+
+          <div class="heatmap-footer">
+            <span>Học cách ptphat77 trích xuất bóng tối</span>
+            <span class="matrix-status">HỆ THỐNG TRỰC TUYẾN 100%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTRIBUTION ACTIVITY TIMELINE -->
+      <div class="timeline-section">
+        <div class="section-header">
+          <h3 class="timeline-title">Lịch Sử Chinh Phục Hầm Ngục (Recent Raids)</h3>
+        </div>
+
+        <div class="timeline-feed">
+          
+          <div class="timeline-item">
+            <div class="timeline-badge icon-push">⚡</div>
+            <div class="timeline-body">
+              <div class="timeline-heading">
+                <strong>Triệu hồi 8 commits mới</strong> vào <a href="https://github.com/ptphat77/demeter" target="_blank">ptphat77/demeter</a>
+              </div>
+              <ul class="timeline-commits">
+                <li><code>f8a29c1</code> Tối ưu hóa pipeline trích xuất dataset smart contracts</li>
+                <li><code>3c5e89a</code> Củng cố hàng rào bảo mật tránh tràn số nguyên</li>
+              </ul>
+              <span class="timeline-time">Hôm nay</span>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-badge icon-repo">🏰</div>
+            <div class="timeline-body">
+              <div class="timeline-heading">
+                <strong>Khai mở hầm ngục mới</strong> <a href="https://github.com/ptphat77/ai-trading" target="_blank">ptphat77/ai-trading</a>
+              </div>
+              <p class="timeline-text">Khởi tạo kiến trúc mô hình học sâu giao dịch tự động.</p>
+              <span class="timeline-time">3 ngày trước</span>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-badge icon-star">⭐</div>
+            <div class="timeline-body">
+              <div class="timeline-heading">
+                <strong>Đạt mốc 14 Repositories</strong> dưới sự chỉ huy của Quân Vương
+              </div>
+              <span class="timeline-time">Tuần trước</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ================= SYSTEM STATUS FULL MODAL ================= -->
+  <div id="statusModal" class="system-modal">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-border-glow"></div>
+      
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <span class="modal-tag">[BẢNG TRẠNG THÁI HỆ THỐNG]</span>
+            <h2>THÔNG TIN THỢ SĂN · STATUS WINDOW</h2>
+          </div>
+          <button class="modal-close-btn" id="closeModalBtn" title="Đóng cửa sổ">✕</button>
+        </div>
+
+        <div class="modal-body">
+          
+          <!-- Top Row: Player Info -->
+          <div class="hud-profile-row">
+            <div class="hud-avatar">
+              <img src="./assets/sung_jinwoo_avatar.jpg" alt="Avatar">
+            </div>
+            <div class="hud-info">
+              <div class="hud-line"><span>TÊN NGƯỜI CHƠI:</span> <strong>PTPHAT77</strong></div>
+              <div class="hud-line"><span>CẤP ĐỘ (LEVEL):</span> <strong class="glow-text">99</strong></div>
+              <div class="hud-line"><span>NGHỀ NGHIỆP:</span> <strong class="monarch-purple-text">QUÂN VƯƠNG BÓNG TỐI (SHADOW MONARCH)</strong></div>
+              <div class="hud-line"><span>DANH HIỆU:</span> <strong>Kẻ Chinh Phục Hầm Ngục & Kỹ Sư Hệ Thống</strong></div>
+            </div>
+          </div>
+
+          <!-- HP / MP Gauges -->
+          <div class="hud-gauges">
+            <div class="gauge-item">
+              <div class="gauge-label">
+                <span>HP (SINH LỰC)</span>
+                <span>100,000 / 100,000</span>
+              </div>
+              <div class="gauge-track hp-track">
+                <div class="gauge-fill hp-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <div class="gauge-item">
+              <div class="gauge-label">
+                <span>MP (NĂNG LƯỢNG MANA)</span>
+                <span>VÔ TẬN (∞ / ∞)</span>
+              </div>
+              <div class="gauge-track mp-track">
+                <div class="gauge-fill mp-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attributes Grid -->
+          <div class="hud-attributes-section">
+            <h4 class="hud-subhead">CHỈ SỐ THUỘC TÍNH (STATS)</h4>
+            <div class="attributes-grid">
+              <div class="attr-box">
+                <span class="attr-name">SỨC MẠNH (STR)</span>
+                <span class="attr-val">324</span>
+                <span class="attr-sub">Tốc độ viết code tối ưu</span>
+              </div>
+              <div class="attr-box">
+                <span class="attr-name">NHANH NHẸN (AGI)</span>
+                <span class="attr-val">310</span>
+                <span class="attr-sub">Khả năng gỡ lỗi thần tốc</span>
+              </div>
+              <div class="attr-box">
+                <span class="attr-name">THỂ LỰC (VIT)</span>
+                <span class="attr-val">295</span>
+                <span class="attr-sub">Khả năng thức khuya refactor</span>
+              </div>
+              <div class="attr-box">
+                <span class="attr-name">TRÍ TUỆ (INT)</span>
+                <span class="attr-val">345</span>
+                <span class="attr-sub">Tư duy kiến trúc hệ thống</span>
+              </div>
+              <div class="attr-box">
+                <span class="attr-name">GIÁC QUAN (PER)</span>
+                <span class="attr-val">318</span>
+                <span class="attr-sub">Đánh hơi security vulnerabilities</span>
+              </div>
+              <div class="attr-box">
+                <span class="attr-name">QUÂN ĐOÀN (ARMY)</span>
+                <span class="attr-val">14 BÓNG</span>
+                <span class="attr-sub">Số lượng repo trong tay</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Skills -->
+          <div class="hud-skills-section">
+            <h4 class="hud-subhead">KỸ NĂNG ĐẶC BIỆT (SKILLS)</h4>
+            <div class="skills-list">
+              <div class="skill-tag"><span>[CHỦ ĐỘNG]</span> Trích Xuất Bóng Tối (Shadow Extraction - Lv.MAX)</div>
+              <div class="skill-tag"><span>[BỊ ĐỘNG]</span> Ý Chí Thép (Kháng Stress Dự Án - Lv.MAX)</div>
+              <div class="skill-tag"><span>[CHỦ ĐỘNG]</span> Bàn Tay Thống Trị (Dominator's Touch - Fullstack Architecture)</div>
+              <div class="skill-tag"><span>[CHỦ ĐỘNG]</span> Lãnh Địa Quân Vương (Monarch's Domain - Smart Contracts & AI)</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="hud-confirm-btn" id="hudCloseBtn">ĐÃ HIỂU HỆ THỐNG</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= GITHUB FOOTER ================= -->
+  <footer class="gh-footer">
+    <div class="gh-footer-inner">
+      <div class="footer-left">
+        <svg class="footer-octocat" viewBox="0 0 16 16" width="24" height="24" fill="currentColor">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+        <span>© 2026 ptphat77 · The Shadow Monarch Domain. Powered by GitHub Pages.</span>
+      </div>
+      <div class="footer-right">
+        <a href="https://docs.github.com" target="_blank" rel="noopener">Docs</a>
+        <a href="https://github.com/ptphat77" target="_blank" rel="noopener">GitHub Profile</a>
+        <a href="https://github.com/ptphat77?tab=repositories" target="_blank" rel="noopener">Repositories</a>
+        <a href="#ariseBtn">Arise Summon</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script File -->
+  <script src="./script.js"></script>
+</body>
+</html>
