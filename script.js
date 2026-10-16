@@ -492,4 +492,170 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+
+  // ================= 10. SUNG JINWOO EYE LIGHTNING AURA ENGINE =================
+  const trailCanvas = document.getElementById('trailCanvas');
+  if (trailCanvas) {
+    const tCtx = trailCanvas.getContext('2d');
+    const tWidth = (trailCanvas.width = 440);
+    const tHeight = (trailCanvas.height = 440);
+
+    // Origin point on the upper-right rim of the circular avatar
+    const originX = 292;
+    const originY = 122;
+
+    const trailSparks = [];
+    let frameCount = 0;
+
+    class TrailSpark {
+      constructor(x, y, vx, vy) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.life = 0;
+        this.maxLife = Math.random() * 25 + 15;
+        this.size = Math.random() * 2.5 + 1;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx += (Math.random() - 0.5) * 0.4;
+        this.vy -= 0.1; // Float upward
+        this.life++;
+      }
+      draw(ctx) {
+        const progress = this.life / this.maxLife;
+        const alpha = 1 - progress;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 240, 255, ${alpha})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#00f0ff';
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Generate jagged lightning path
+    function drawJaggedBolt(ctx, x1, y1, x2, y2, displace, width, color) {
+      if (displace < 2.5) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.stroke();
+        return;
+      }
+      const midX = (x1 + x2) / 2 + (Math.random() - 0.5) * displace;
+      const midY = (y1 + y2) / 2 + (Math.random() - 0.5) * displace;
+      drawJaggedBolt(ctx, x1, y1, midX, midY, displace / 2, width, color);
+      drawJaggedBolt(ctx, midX, midY, x2, y2, displace / 2, width, color);
+    }
+
+    function renderEyeLightning() {
+      tCtx.clearRect(0, 0, tWidth, tHeight);
+      frameCount++;
+
+      const time = frameCount * 0.045;
+
+      // Primary bezier curve control points for the undulating lightning streak
+      // Streams upward and to the right/top-right, curling backwards like Sung Jinwoo's aura
+      const endX = originX + 75 + Math.sin(time * 0.8) * 14;
+      const endY = originY - 110 + Math.cos(time * 1.1) * 12;
+
+      const cp1x = originX + 25 + Math.cos(time * 1.3) * 18;
+      const cp1y = originY - 50 + Math.sin(time * 1.5) * 16;
+
+      const cp2x = originX + 55 + Math.sin(time * 1.2) * 20;
+      const cp2y = originY - 85 + Math.cos(time * 0.9) * 16;
+
+      // 1. Draw glowing outer energy aura ribbon
+      tCtx.save();
+      tCtx.beginPath();
+      tCtx.moveTo(originX, originY);
+      tCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, endY);
+      tCtx.strokeStyle = 'rgba(0, 240, 255, 0.25)';
+      tCtx.lineWidth = 18;
+      tCtx.lineCap = 'round';
+      tCtx.shadowBlur = 24;
+      tCtx.shadowColor = '#00f0ff';
+      tCtx.stroke();
+
+      // 2. Inner intense plasma core
+      tCtx.beginPath();
+      tCtx.moveTo(originX, originY);
+      tCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, endY);
+      tCtx.strokeStyle = 'rgba(0, 240, 255, 0.85)';
+      tCtx.lineWidth = 6;
+      tCtx.shadowBlur = 12;
+      tCtx.shadowColor = '#00f0ff';
+      tCtx.stroke();
+
+      // 3. Ultra-bright white core center
+      tCtx.beginPath();
+      tCtx.moveTo(originX, originY);
+      tCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, endY);
+      tCtx.strokeStyle = '#ffffff';
+      tCtx.lineWidth = 2.2;
+      tCtx.stroke();
+      tCtx.restore();
+
+      // 4. Secondary energy tendril (curving slightly higher/lower)
+      const tendrilEndX = originX + 90 + Math.cos(time * 1.4) * 18;
+      const tendrilEndY = originY - 85 + Math.sin(time * 1.2) * 15;
+      tCtx.save();
+      tCtx.beginPath();
+      tCtx.moveTo(originX, originY);
+      tCtx.quadraticCurveTo(cp1x + 15, cp1y - 10, tendrilEndX, tendrilEndY);
+      tCtx.strokeStyle = 'rgba(139, 92, 246, 0.65)';
+      tCtx.lineWidth = 3.5;
+      tCtx.shadowBlur = 10;
+      tCtx.shadowColor = '#8b5cf6';
+      tCtx.stroke();
+      tCtx.restore();
+
+      // 5. Crackling electric lightning forks (Tia sét nhánh)
+      tCtx.save();
+      tCtx.shadowBlur = 10;
+      tCtx.shadowColor = '#00f0ff';
+      if (Math.random() > 0.15) {
+        const midPointT = 0.5 + (Math.random() - 0.5) * 0.3;
+        // Point along bezier
+        const bx = Math.pow(1 - midPointT, 3) * originX + 3 * Math.pow(1 - midPointT, 2) * midPointT * cp1x + 3 * (1 - midPointT) * Math.pow(midPointT, 2) * cp2x + Math.pow(midPointT, 3) * endX;
+        const by = Math.pow(1 - midPointT, 3) * originY + 3 * Math.pow(1 - midPointT, 2) * midPointT * cp1y + 3 * (1 - midPointT) * Math.pow(midPointT, 2) * cp2y + Math.pow(midPointT, 3) * endY;
+        
+        const forkEndX = bx + (Math.random() * 40 - 15);
+        const forkEndY = by - (Math.random() * 35 + 10);
+        drawJaggedBolt(tCtx, bx, by, forkEndX, forkEndY, 14, 1.4, '#ffffff');
+      }
+      tCtx.restore();
+
+      // 6. Spawn and update electric sparks along trail
+      if (Math.random() > 0.35 && trailSparks.length < 35) {
+        const sparkT = Math.random();
+        const sx = Math.pow(1 - sparkT, 3) * originX + 3 * Math.pow(1 - sparkT, 2) * sparkT * cp1x + 3 * (1 - sparkT) * Math.pow(sparkT, 2) * cp2x + Math.pow(sparkT, 3) * endX;
+        const sy = Math.pow(1 - sparkT, 3) * originY + 3 * Math.pow(1 - sparkT, 2) * sparkT * cp1y + 3 * (1 - sparkT) * Math.pow(sparkT, 2) * cp2y + Math.pow(sparkT, 3) * endY;
+        const vx = (Math.random() - 0.2) * 1.8 + 0.4;
+        const vy = -(Math.random() * 2.2 + 0.8);
+        trailSparks.push(new TrailSpark(sx, sy, vx, vy));
+      }
+
+      for (let i = trailSparks.length - 1; i >= 0; i--) {
+        const s = trailSparks[i];
+        s.update();
+        s.draw(tCtx);
+        if (s.life >= s.maxLife) {
+          trailSparks.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(renderEyeLightning);
+    }
+
+    renderEyeLightning();
+  }
+
 });
