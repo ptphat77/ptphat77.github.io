@@ -604,15 +604,15 @@ body.screen-quake {
 }
 
 .vcard-fullname {
-  font-family: var(--font-monarch);
-  font-size: 26px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.5px;
+  font-family: var(--font-sans);
+  font-size: 23px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.8px;
   display: flex;
   align-items: center;
   gap: 8px;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
 }
 
 .monarch-insignia {
