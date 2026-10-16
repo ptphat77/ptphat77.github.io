@@ -505,11 +505,9 @@ body.screen-quake {
   position: relative;
   width: 290px;
   height: 290px;
-  margin: 60px auto 10px; /* added top margin so the tall flame crest has plenty of headroom */
+  aspect-ratio: 1 / 1;
+  margin: 70px auto 15px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* FLAME RING WRAPPER: Perfectly wrapped around the 290px avatar circle */
@@ -570,17 +568,20 @@ body.screen-quake {
 .avatar-img {
   width: 290px;
   height: 290px;
+  min-width: 290px;
+  min-height: 290px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   object-fit: cover;
   object-position: center 25%;
-  border: 3px solid rgba(0, 240, 255, 0.6);
+  display: block;
+  border: 3px solid rgba(0, 240, 255, 0.7);
   box-shadow: 
-    0 0 20px rgba(0, 240, 255, 0.5),
-    inset 0 0 20px rgba(0, 240, 255, 0.3);
+    0 0 25px rgba(0, 240, 255, 0.6),
+    inset 0 0 25px rgba(0, 240, 255, 0.3);
   position: relative;
   z-index: 2;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
-  cursor: pointer;
 }
 
 .avatar-aura-wrapper:hover .avatar-img {
@@ -595,31 +596,7 @@ body.screen-quake {
   100% { transform: scale(1); opacity: 0.85; filter: blur(3px); }
 }
 
-.avatar-toggle-pill {
-  position: absolute;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(10, 11, 20, 0.92);
-  border: 1px solid var(--monarch-blue);
-  color: var(--text-main);
-  font-size: 11px;
-  font-family: var(--font-mono);
-  padding: 4px 10px;
-  border-radius: 20px;
-  cursor: pointer;
-  white-space: nowrap;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 0 12px var(--monarch-blue-glow);
-  transition: all 0.2s ease;
-  z-index: 5;
-}
 
-.avatar-toggle-pill:hover {
-  background: var(--monarch-blue);
-  color: #000;
-  font-weight: 700;
-}
 
 /* User Names */
 .vcard-names {

@@ -405,30 +405,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ================= 7. AVATAR SWITCHER =================
-  const avatarImg = document.getElementById('avatarImg');
-  const hudAvatarImg = document.getElementById('hudAvatarImg');
-  const toggleAvatarBtn = document.getElementById('toggleAvatarBtn');
-  let isRealAvatar = true;
-
-  if (toggleAvatarBtn && avatarImg) {
-    toggleAvatarBtn.addEventListener('click', () => {
-      initAudio();
-      playSystemChime();
-      isRealAvatar = !isRealAvatar;
-
-      if (isRealAvatar) {
-        avatarImg.src = './assets/phat-avatar.jpg';
-        if (hudAvatarImg) hudAvatarImg.src = './assets/phat-avatar.jpg';
-        showToast('[HỆ THỐNG]: Đã hiển thị Avatar chính chủ của Phạm Thành Phát!');
-      } else {
-        avatarImg.src = './assets/sung_jinwoo_avatar.jpg';
-        if (hudAvatarImg) hudAvatarImg.src = './assets/sung_jinwoo_avatar.jpg';
-        showToast('[HỆ THỐNG]: Đã thức tỉnh hình thái Quân Vương Bóng Tối Sung Jinwoo!');
-      }
-    });
-  }
-
   // ================= 8. SYSTEM STATUS FULL MODAL =================
   const statusModal = document.getElementById('statusModal');
   const openStatusModalBtn = document.getElementById('openStatusModalBtn');
