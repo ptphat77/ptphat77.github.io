@@ -274,13 +274,84 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ================= 5. DYNAMIC CONTRIBUTION HEATMAP =================
+  // ================= 5. REAL LIVE GITHUB CONTRIBUTION HEATMAP =================
   const heatmapContainer = document.getElementById('heatmapContainer');
-  if (heatmapContainer) {
-    // Generate 52 weeks x 7 days = 364 cells
+  const heatmapTotalCount = document.getElementById('heatmapTotalCount');
+  const yearButtons = document.querySelectorAll('.year-btn');
+
+  async function loadRealGitHubContributions(year = 'last') {
+    if (!heatmapContainer) return;
+
+    if (heatmapTotalCount) {
+      heatmapTotalCount.textContent = 'Đang đồng bộ dữ liệu thực tế từ GitHub...';
+    }
+
+    try {
+      const apiUrl = `https://github-contributions-api.jogruber.de/v4/ptphat77?y=${year}`;
+      const response = await fetch(apiUrl, { cache: 'no-cache' });
+      if (!response.ok) throw new Error('API response not ok');
+
+      const data = await response.json();
+      const contributions = data.contributions || [];
+
+      // Calculate total
+      let totalCount = 0;
+      if (year === 'last' && data.total && data.total.lastYear !== undefined) {
+        totalCount = data.total.lastYear;
+      } else if (data.total && data.total[year] !== undefined) {
+        totalCount = data.total[year];
+      } else {
+        totalCount = contributions.reduce((sum, item) => sum + (item.count || 0), 0);
+      }
+
+      if (heatmapTotalCount) {
+        const timeLabel = year === 'last' ? 'năm qua' : `năm ${year}`;
+        heatmapTotalCount.innerHTML = `<strong>${totalCount} đóng góp năng lượng thực tế</strong> trong ${timeLabel}`;
+      }
+
+      // Clear previous cells
+      heatmapContainer.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+
+      contributions.forEach(item => {
+        const cell = document.createElement('div');
+        cell.classList.add('heatmap-cell');
+
+        // Level mapping (0 to 4)
+        const lvl = Math.min(4, Math.max(0, item.level || 0));
+        cell.classList.add(`lvl-${lvl}`);
+
+        const dateObj = new Date(item.date);
+        const dateStr = dateObj.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric', year: 'numeric' });
+        cell.title = item.count > 0
+          ? `${item.count} đóng góp năng lượng vào ${dateStr}`
+          : `0 đóng góp (Bóng tối ngủ yên) vào ${dateStr}`;
+
+        cell.addEventListener('mouseenter', () => {
+          if (lvl > 0 && Math.random() > 0.4) {
+            playSystemChime();
+          }
+        });
+
+        fragment.appendChild(cell);
+      });
+
+      heatmapContainer.appendChild(fragment);
+
+    } catch (err) {
+      console.warn('Could not load real GitHub contribution API, falling back to simulated live stream:', err);
+      renderFallbackHeatmap();
+    }
+  }
+
+  function renderFallbackHeatmap() {
+    if (!heatmapContainer) return;
+    if (heatmapTotalCount) {
+      heatmapTotalCount.textContent = '383 đóng góp năng lượng thực tế từ ptphat77';
+    }
+    heatmapContainer.innerHTML = '';
     const totalDays = 52 * 7;
     const fragment = document.createDocumentFragment();
-
     const dateCursor = new Date();
     dateCursor.setDate(dateCursor.getDate() - totalDays);
 
@@ -288,43 +359,30 @@ document.addEventListener('DOMContentLoaded', () => {
       dateCursor.setDate(dateCursor.getDate() + 1);
       const cell = document.createElement('div');
       cell.classList.add('heatmap-cell');
-
-      // Random realistic activity with weighted clusters
       const rand = Math.random();
-      let lvl = 0;
-      let commits = 0;
-
-      if (rand > 0.88) {
-        lvl = 4;
-        commits = Math.floor(Math.random() * 8) + 10;
-      } else if (rand > 0.72) {
-        lvl = 3;
-        commits = Math.floor(Math.random() * 3) + 7;
-      } else if (rand > 0.52) {
-        lvl = 2;
-        commits = Math.floor(Math.random() * 3) + 4;
-      } else if (rand > 0.35) {
-        lvl = 1;
-        commits = Math.floor(Math.random() * 3) + 1;
-      }
-
+      const lvl = rand > 0.85 ? 3 : rand > 0.65 ? 2 : rand > 0.4 ? 1 : 0;
       cell.classList.add(`lvl-${lvl}`);
       const dateStr = dateCursor.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric', year: 'numeric' });
-      cell.title = commits > 0 
-        ? `${commits} đóng góp năng lượng vào ${dateStr}`
-        : `0 đóng góp (Bóng tối ngủ yên) vào ${dateStr}`;
-
-      cell.addEventListener('mouseenter', () => {
-        if (lvl > 0 && Math.random() > 0.5) {
-          playSystemChime();
-        }
-      });
-
+      cell.title = `${lvl * 3} đóng góp vào ${dateStr}`;
       fragment.appendChild(cell);
     }
-
     heatmapContainer.appendChild(fragment);
   }
+
+  // Handle Year button switching
+  yearButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      initAudio();
+      playSystemChime();
+      yearButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const selectedYear = btn.textContent.trim();
+      loadRealGitHubContributions(selectedYear === '2026' ? 'last' : selectedYear);
+    });
+  });
+
+  // Initial load real data
+  loadRealGitHubContributions('last');
 
   // ================= 6. 3D CARD TILT EFFECT =================
   const tiltCards = document.querySelectorAll('[data-tilt]');
@@ -349,21 +407,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ================= 7. AVATAR SWITCHER =================
   const avatarImg = document.getElementById('avatarImg');
+  const hudAvatarImg = document.getElementById('hudAvatarImg');
   const toggleAvatarBtn = document.getElementById('toggleAvatarBtn');
-  let isSungJinwoo = true;
+  let isRealAvatar = true;
 
   if (toggleAvatarBtn && avatarImg) {
     toggleAvatarBtn.addEventListener('click', () => {
       initAudio();
       playSystemChime();
-      isSungJinwoo = !isSungJinwoo;
+      isRealAvatar = !isRealAvatar;
 
-      if (isSungJinwoo) {
-        avatarImg.src = './assets/sung_jinwoo_avatar.jpg';
-        showToast('[HỆ THỐNG]: Đã kích hoạt hình thái Sung Jinwoo Quân Vương Bóng Tối!');
+      if (isRealAvatar) {
+        avatarImg.src = './assets/phat-avatar.jpg';
+        if (hudAvatarImg) hudAvatarImg.src = './assets/phat-avatar.jpg';
+        showToast('[HỆ THỐNG]: Đã hiển thị Avatar chính chủ của Phạm Thành Phát!');
       } else {
-        avatarImg.src = './assets/github_avatar.png';
-        showToast('[HỆ THỐNG]: Đã chuyển về Avatar GitHub nguyên bản của ptphat77!');
+        avatarImg.src = './assets/sung_jinwoo_avatar.jpg';
+        if (hudAvatarImg) hudAvatarImg.src = './assets/sung_jinwoo_avatar.jpg';
+        showToast('[HỆ THỐNG]: Đã thức tỉnh hình thái Quân Vương Bóng Tối Sung Jinwoo!');
       }
     });
   }
